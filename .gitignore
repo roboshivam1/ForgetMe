@@ -4,5 +4,8 @@ __pycache__/
 *.pyc
 *_data.json
 data/followups.json
-*.sh
 logs/
+data/receipts.json
+batch*.sh
+fix*.sh
+test_pipeline.sh

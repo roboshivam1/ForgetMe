@@ -33,6 +33,8 @@ def rule_intent(text, state, count):
         return {"intent": "restart"}
     if re.match(r"^(cancel|stop|nope|no)\b", t):
         return {"intent": "cancel"}
+    if re.search(r"\b(upgrade|concierge|premium)\b", t):
+        return {"intent": "upgrade"}
     if email:
         return {"intent": "scan", "email": email.group(0)}
     if state == "confirm" and YES_RE.match(t):
@@ -52,12 +54,12 @@ def rule_intent(text, state, count):
 SYSTEM = (
     "You route chat messages for ForgetMe, an assistant that finds a person's breached or forgotten "
     "online accounts and files deletion requests. Classify the user's latest message. "
-    'Return JSON: {"intent": "scan|select|confirm|cancel|restart|secure|help|question", '
+    'Return JSON: {"intent": "scan|select|confirm|cancel|restart|secure|upgrade|help|question", '
     '"email": "", "numbers": [], "all_delete": false, "name": "", "answer": ""}. '
     "scan = they want an email checked (put it in email). select = they choose accounts (numbers are the "
     "1-based list numbers; all_delete=true means every account marked delete). confirm = they agree to send "
     "the deletion requests (name = the name they want to sign with, if given). secure = they want help "
-    "protecting accounts. question = anything else; then write a short, accurate answer (max 60 words) "
+    "protecting accounts. upgrade = they want the paid Concierge plan. question = anything else; then write a short, accurate answer (max 60 words) "
     "about privacy, data breaches, account deletion or how ForgetMe works, and never invent facts about the user."
 )
 

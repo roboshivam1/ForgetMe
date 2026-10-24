@@ -14,8 +14,23 @@ PERSONAL = {
     "health insurance information", "sexual orientations", "sexual preferences",
 }
 
+CRYPTO_DOMAINS = {"ledger.com", "gemini.com", "cointracker.io", "coinmarketcap.com",
+                  "coinmama.com", "btc-e.com", "gatehub.net"}
+CRYPTO_NAMES = {"ledger", "gemini", "cointracker", "coinmarketcap", "coinmama", "btce", "btcalpha", "gatehub"}
+CRYPTO_WORDS = ("crypto", "wallet", "bitcoin", "blockchain")
+CRYPTO_NOTE = "⚠️ Crypto service: expect targeted phishing and fake support calls; never share your seed phrase."
+
 DELETE_AT = 60
 SECURE_AT = 35
+
+
+def is_crypto(account):
+    domain = (account.domain or "").lower().removeprefix("www.")
+    name = "".join(ch for ch in account.service.lower() if ch.isalnum())
+    if domain in CRYPTO_DOMAINS or name in CRYPTO_NAMES:
+        return True
+    classes = [c.lower() for c in (account.breach.data_classes if account.breach else [])]
+    return any(word in c for c in classes for word in CRYPTO_WORDS)
 
 
 def years_since(breach_date):
@@ -53,6 +68,9 @@ def score_account(account, category_risk=0):
             score += 5
 
     high_impact = bool(classes & FINANCIAL) or breach.is_sensitive
+    if is_crypto(account):
+        score += 20
+        high_impact = True
     return min(score, 100), years, high_impact
 
 

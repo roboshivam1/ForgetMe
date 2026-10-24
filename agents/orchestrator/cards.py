@@ -47,6 +47,11 @@ ACTION_CANCEL = "cancel"
 
 SELF_SERVE = ("link", "form", "app_only")
 
+CRYPTO_MARK = "Crypto service"
+CRYPTO_ADVICE = ("Crypto accounts found: move funds to a hardware wallet you control, rotate exchange API keys, "
+                 "turn on withdrawal allow-lists, and treat any 'support' call as a scam. "
+                 "ForgetMe never asks for your seed phrase.")
+
 VERDICTS = {
     "delete": ("🔴 Delete", "warning"),
     "secure": ("🟡 Secure", "info"),
@@ -65,6 +70,14 @@ def _plural(n: int, word: str) -> str:
 
 def plain(markdown_text: str) -> str:
     return (markdown_text or "").replace("**", "")
+
+
+def _crypto_split(reason: str):
+    """Return (reason without the crypto note, is_crypto). The note is long and would be cut by _short()."""
+    reason = str(reason or "")
+    if CRYPTO_MARK not in reason:
+        return reason, False
+    return re.split(r"\s*⚠️?\s*" + CRYPTO_MARK, reason)[0].strip(), True
 
 
 def emailable(action: Dict[str, Any]) -> bool:
@@ -107,11 +120,16 @@ def build_report_payload(items: List[Dict[str, Any]], headline: str = "",
     red = sum(1 for i in shown if i.get("verdict") == "delete")
 
     rows: List[Dict[str, Any]] = []
+    any_crypto = False
     for number, item in enumerate(shown, start=1):
         label, variant = VERDICTS.get(item.get("verdict"), VERDICTS["keep"])
         detail: List[Dict[str, Any]] = [{"type": "badge", "label": label, "variant": variant}]
-        if item.get("reason"):
-            detail.append({"type": "text", "value": _short(item["reason"]), "style": "muted"})
+        reason, crypto = _crypto_split(item.get("reason"))
+        any_crypto = any_crypto or crypto
+        if crypto:
+            detail.append({"type": "badge", "label": "⚠️ Crypto", "variant": "warning"})
+        if reason:
+            detail.append({"type": "text", "value": _short(reason), "style": "muted"})
         rows.append({
             "type": "group", "direction": "column", "gap": 4,
             "children": [
@@ -132,7 +150,10 @@ def build_report_payload(items: List[Dict[str, Any]], headline: str = "",
     if headline:
         children.append({"type": "text", "value": headline, "style": "emphasis"})
     children += _score_block(score, projected)
-    children += rows + [{"type": "divider"}, _row(*buttons)]
+    children += rows
+    if any_crypto:
+        children.append({"type": "text", "value": CRYPTO_ADVICE, "style": "muted"})
+    children += [{"type": "divider"}, _row(*buttons)]
     return {"root": {"type": "section", "title": "Your exposure report",
                      "subtitle": f"{_plural(len(shown), 'account')} · {red} marked delete",
                      "children": children}}
@@ -185,6 +206,10 @@ def build_done_payload(actions: List[Dict[str, Any]], deadline: str = "",
     if sent:
         children.append({"type": "text", "style": "muted",
                          "value": _short(", ".join(a["service"] for a in sent), 140)})
+    receipts = [a["receipt"] for a in sent if a.get("receipt")]
+    if receipts:
+        children.append({"type": "text", "style": "muted",
+                         "value": _short("Receipts: " + ", ".join(receipts), 140)})
     if deadline and sent:
         children.append({"type": "text", "style": "emphasis",
                          "value": f"Companies should reply by {deadline}. I'll chase anyone who ignores you."})

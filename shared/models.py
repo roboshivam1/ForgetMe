@@ -68,6 +68,7 @@ class EraseAction(Model):
     letter: str = ""
     sent: bool = False
     error: str = ""
+    receipt: str = ""
 
 
 class EraseResult(Model):

@@ -52,9 +52,16 @@ Open each agent's inspector link from `logs/*.log` once, choose Connect, then Ma
 
 **Safety switches in `.env`:** `EMAIL_DRY_RUN=true` sends nothing; `EMAIL_REDIRECT_TO` sends every email to one inbox instead of the companies (demo mode); `FOLLOWUP_DEMO_SECONDS` makes follow-ups fire after N seconds instead of 30 days.
 
+## Extras
+
+- **Privacy score:** a 0-100 score with a projected score once requests complete.
+- **Crypto flag:** breached crypto services are marked high risk with phishing and seed-phrase warnings. ForgetMe never asks for wallet secrets.
+- **Request receipts:** every sent request gets a SHA-256 fingerprint and timestamp (`RCPT-...`), stored locally. Anchoring receipts on-chain is on the roadmap.
+- **Interactive Cards:** scan form, exposure report with checkboxes, deletion plan with Send, and a summary card, all inside ASI:One.
+
 ## Business model
 
-Free scan and triage. A paid Concierge tier sends every request, chases non-responders and rescans every quarter.
+Free: scan, triage and deletion requests. Paid **Concierge** upgrade through the Fetch Agent Payment Protocol with Stripe (test mode in this demo): ForgetMe keeps chasing companies until they confirm. Quarterly rescans are on the roadmap.
 
 ## Credits
 

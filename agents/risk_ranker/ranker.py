@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 
-from agents.risk_ranker.rules import fallback_reason, score_account, verdict_for
+from agents.risk_ranker.rules import CRYPTO_NOTE, fallback_reason, is_crypto, score_account, verdict_for
 from shared.asi1 import aask_json
 from shared.models import TriagedAccount
 
@@ -68,12 +68,15 @@ async def triage(accounts):
     for account in accounts:
         info = insights.get(account.service.strip().lower(), {})
         score, years, high_impact = score_account(account, info.get("category_risk", 0))
+        reason = info.get("reason") or fallback_reason(account)
+        if is_crypto(account):
+            reason = f"{reason} {CRYPTO_NOTE}"
         items.append(
             TriagedAccount(
                 service=account.service,
                 domain=account.domain,
                 verdict=verdict_for(score, years, high_impact),
-                reason=info.get("reason") or fallback_reason(account),
+                reason=reason,
                 score=score,
             )
         )

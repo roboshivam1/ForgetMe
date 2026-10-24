@@ -1,11 +1,15 @@
+import asyncio
 import time
 from datetime import date
 
 from uagents import Protocol
 from uagents_core.contrib.protocols.chat import ChatAcknowledgement, ChatMessage, chat_protocol_spec
+from uagents_core.contrib.protocols.payment import (
+    CancelPayment, CommitPayment, CompletePayment, Funds, RejectPayment, RequestPayment, payment_protocol_spec,
+)
 
 from agents.eraser.letters import deadline_from
-from agents.orchestrator import cards, score, views
+from agents.orchestrator import cards, payments, score, views
 from agents.orchestrator.intent import classify
 from agents.orchestrator.state import Sessions, to_dict
 from shared.agentkit import make_agent
@@ -18,6 +22,7 @@ from shared.models import (
 
 agent = make_agent("orchestrator", "forgetme")
 chat = Protocol(spec=chat_protocol_spec)
+pay = Protocol(spec=payment_protocol_spec, role="seller")
 
 SCOUT = address_for("breach_scout")
 RANKER = address_for("risk_ranker")
@@ -25,6 +30,7 @@ ERASER = address_for("eraser")
 FOLLOW_UP = address_for("follow_up")
 BUSY = ("scanning", "ranking", "planning", "sending")
 STUCK_AFTER = 120
+UPGRADE_HINT = "Want me to keep chasing until every company confirms? Reply `upgrade` for **ForgetMe Concierge**."
 
 
 async def say(ctx, user, text):
@@ -157,6 +163,9 @@ async def handle(ctx, user, sessions, session, text):
             accounts=[TriagedAccount(**t) for t in targets], send=True,
         ))
 
+    elif kind == "upgrade":
+        await offer_concierge(ctx, user)
+
     elif kind == "secure":
         await say(ctx, user, views.secure_tips(items) if items else "Send me an email address to scan first.")
 
@@ -246,6 +255,8 @@ async def on_erase(ctx, sender, msg):
     line = score.done_line(current, projected)
     if line:
         text = f"{text}\n\n{line}"
+    if payments.enabled() and not ctx.storage.get(f"c:{user}"):
+        text = f"{text}\n\n{UPGRADE_HINT}"
     await ctx.send(user, cards.done_message(text, actions, deadline_text, current, projected))
     for action in msg.actions:
         if action.sent:
@@ -264,7 +275,68 @@ async def on_followup_ack(ctx, sender, msg):
     ctx.logger.info(f"Follow-up tracking {msg.tracked} requests for {msg.request_id}")
 
 
+
+async def offer_concierge(ctx, user):
+    if ctx.storage.get(f"c:{user}"):
+        await say(ctx, user, "Concierge is already active for you. ✅")
+        return
+    if not payments.enabled():
+        await say(ctx, user, "Concierge payments aren't switched on right now.")
+        return
+    try:
+        checkout = await asyncio.to_thread(payments.create_checkout, user)
+    except Exception as err:
+        ctx.logger.exception(f"Stripe checkout failed: {err}")
+        await say(ctx, user, views.error("I couldn't start the payment. Please try again."))
+        return
+    checkout_id = checkout["checkout_session_id"]
+    ctx.storage.set(f"p:{checkout_id}", user)
+    await say(ctx, user, (
+        f"**ForgetMe Concierge** ({payments.price_text()}): I keep chasing every company until they "
+        "confirm your data is deleted.\n\nComplete the payment in the checkout card. "
+        "_Stripe test mode: use card 4242 4242 4242 4242, any future date, any CVC._"
+    ))
+    await ctx.send(user, RequestPayment(
+        accepted_funds=[Funds(currency=payments.currency().upper(), amount=f"{payments.price_cents() / 100:.2f}",
+                              payment_method="stripe")],
+        recipient=str(agent.address),
+        deadline_seconds=1800,
+        reference=checkout_id,
+        description="ForgetMe Concierge: we chase every company until they confirm deletion.",
+        metadata={"stripe": checkout, "service": "forgetme_concierge"},
+    ))
+    ctx.logger.info(f"Payment requested: {checkout_id}")
+
+
+@pay.on_message(CommitPayment)
+async def on_commit(ctx, sender, msg):
+    user = ctx.storage.get(f"p:{msg.transaction_id}") or sender
+    if msg.funds.payment_method != "stripe" or not msg.transaction_id:
+        await ctx.send(sender, CancelPayment(transaction_id=msg.transaction_id, reason="Unsupported payment method."))
+        return
+    try:
+        paid = await asyncio.to_thread(payments.is_paid, msg.transaction_id)
+    except Exception as err:
+        ctx.logger.exception(f"Stripe verification failed: {err}")
+        paid = False
+    if not paid:
+        await ctx.send(sender, CancelPayment(transaction_id=msg.transaction_id,
+                                             reason="Payment not completed yet. Finish checkout, then pay again."))
+        await say(ctx, user, "I couldn't confirm the payment yet. Finish the checkout, then press Pay again.")
+        return
+    await ctx.send(sender, CompletePayment(transaction_id=msg.transaction_id))
+    ctx.storage.set(f"c:{user}", True)
+    ctx.logger.info(f"Payment complete: {msg.transaction_id}")
+    await say(ctx, user, "✅ Payment verified. **ForgetMe Concierge is active.** I'll keep chasing every company until they confirm.")
+
+
+@pay.on_message(RejectPayment)
+async def on_reject(ctx, sender, msg):
+    await say(ctx, sender, "No problem, no payment taken. Everything on the free plan keeps working.")
+
+
 agent.include(chat, publish_manifest=True)
+agent.include(pay, publish_manifest=True)
 
 if __name__ == "__main__":
     agent.run()

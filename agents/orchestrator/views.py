@@ -68,8 +68,15 @@ def triage_report(email, breaches, items):
         "Reply `delete all` to remove every 🔴 account, or pick numbers like `delete 1, 3`. "
         "Say `secure` for how to protect the 🟡 ones.",
         "",
-        ATTRIBUTION,
     ]
+    if any("Crypto service" in i["reason"] for i in items):
+        lines += [
+            "**Crypto accounts found.** Move funds to a hardware wallet you control, rotate any exchange API keys, "
+            "turn on withdrawal allow-lists, and treat any 'support' call or email as a scam. "
+            "ForgetMe will never ask for your seed phrase or wallet password.",
+            "",
+        ]
+    lines.append(ATTRIBUTION)
     return "\n".join(lines)
 
 
@@ -115,7 +122,8 @@ def erase_done(actions, deadline):
     if sent:
         lines.append(f"✅ Sent **{len(sent)}** deletion request{'s' if len(sent) != 1 else ''}:")
         for a in sent:
-            lines.append(f"- {a['service']} → {a['privacy_email']}")
+            receipt = f" · receipt `{a['receipt']}`" if a.get("receipt") else ""
+            lines.append(f"- {a['service']} → {a['privacy_email']}{receipt}")
         lines.append(f"\nCompanies should reply by **{deadline}**. I'll track that and chase anyone who ignores you.")
     if failed:
         lines.append("\n⚠️ Not sent:")
