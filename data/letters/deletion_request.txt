@@ -1,0 +1,21 @@
+Subject: Request to delete my account and personal data ({service})
+
+Dear {service} Privacy Team,
+
+I am writing to request that you delete my account and all personal data you hold about me, including any data associated with the email address {user_email}.
+
+I make this request under Article 17 of the EU General Data Protection Regulation (the right to erasure), the California Consumer Privacy Act where it applies, and any other data protection law that applies to you.
+
+Please:
+1. Delete my account and all personal data associated with it.
+2. Confirm in writing once the deletion is complete.
+3. If you are unable to delete any of my data, tell me which data and the legal reason.
+
+Under the GDPR you should respond within one month of receiving this request, which is by {deadline}.
+
+If you need to verify my identity, please reply to this email.
+
+Regards,
+{user_name}
+{user_email}
+{date}
