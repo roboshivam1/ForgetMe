@@ -1,0 +1,14 @@
+Subject: Follow-up: unanswered request to delete my data ({service})
+
+Dear {service} Privacy Team,
+
+On {sent_on} I asked you to delete my account and all personal data associated with {user_email}. I have not received a confirmation that this has been done.
+
+Under Article 12(3) of the GDPR, you are required to respond to a data subject request within one month of receiving it.
+
+Please confirm within 7 days that my data has been deleted, or explain why it cannot be. If I do not hear back, I may lodge a complaint with the relevant data protection authority.
+
+Regards,
+{user_name}
+{user_email}
+{date}
