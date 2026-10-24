@@ -1,0 +1,33 @@
+Every time (normal start)
+
+1. Open a terminal in the project:
+
+bash
+cd /Users/shivamkapoor/Desktop/Development/Python_progs/Projects/forgetme
+
+2. Clear out anything still running from before:
+
+bash
+bash scripts/stop_all.sh
+
+3. Start all 5 agents:
+
+bash
+./run_all.sh
+
+Leave this terminal open. Ctrl+C here stops everything.
+
+4. In a second terminal, watch the Orchestrator:
+
+bash
+cd /Users/shivamkapoor/Desktop/Development/Python_progs/Projects/forgetme
+tail -f logs/orchestrator.log
+
+Wait for ForgetMe orchestrator ready and Mailbox access token acquired. Mailboxes stay connected between runs, so there’s no need to open the inspector again.
+
+5. In a third terminal, keep the Mac awake:
+
+bash
+caffeinate -dimsu
+
+6. Chat. Go to Agentverse → your ForgetMe agent → Chat with Agent, or @mention it in ASI:One. Send an email address.

@@ -1,0 +1,57 @@
+{
+  "root": {
+    "type": "section",
+    "title": "All done",
+    "children": [
+      {
+        "type": "badge",
+        "label": "✓ 2 requests sent",
+        "variant": "success"
+      },
+      {
+        "type": "text",
+        "style": "muted",
+        "value": "Gawker, Stratfor"
+      },
+      {
+        "type": "text",
+        "style": "emphasis",
+        "value": "Companies should reply by 24 November 2026. I'll chase anyone who ignores you."
+      },
+      {
+        "type": "group",
+        "direction": "row",
+        "gap": 8,
+        "children": [
+          {
+            "type": "badge",
+            "label": "Privacy score 33/100",
+            "variant": "warning"
+          },
+          {
+            "type": "text",
+            "value": "Exposed",
+            "style": "emphasis"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "style": "muted",
+        "value": "Projected after cleanup: 97/100 once companies confirm."
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "heading",
+        "value": "Delete these yourself",
+        "level": 3
+      },
+      {
+        "type": "text",
+        "value": "Adobe: https://example.com/delete"
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "title": "How exposed are you?",
+  "fields": [
+    {
+      "name": "email",
+      "kind": "email",
+      "label": "Email address to check",
+      "required": true
+    }
+  ],
+  "submit_cta": {
+    "label": "Scan",
+    "selection": {
+      "action": "scan"
+    }
+  }
+}

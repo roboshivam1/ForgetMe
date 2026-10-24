@@ -5,7 +5,7 @@ from uagents import Protocol
 from uagents_core.contrib.protocols.chat import ChatAcknowledgement, ChatMessage, chat_protocol_spec
 
 from agents.eraser.letters import deadline_from
-from agents.orchestrator import views
+from agents.orchestrator import cards, score, views
 from agents.orchestrator.intent import classify
 from agents.orchestrator.state import Sessions, to_dict
 from shared.agentkit import make_agent
@@ -54,6 +54,13 @@ def begin(sessions, user, session, state):
     return sessions.start_request(user, session, state)
 
 
+def with_line(text, line):
+    if not line:
+        return text
+    head, _, rest = text.partition("\n")
+    return f"{head}\n{line}\n{rest}" if rest else f"{head}\n{line}"
+
+
 @agent.on_event("startup")
 async def started(ctx):
     ctx.logger.info(f"ForgetMe orchestrator ready at {agent.address}")
@@ -67,7 +74,7 @@ async def on_chat(ctx, sender, msg):
     session = sessions.get(sender)
     if not text:
         if session["state"] == "idle":
-            await say(ctx, sender, views.welcome())
+            await ctx.send(sender, cards.welcome_message(views.welcome()))
         return
     try:
         await handle(ctx, sender, sessions, session, text)
@@ -98,7 +105,7 @@ async def handle(ctx, user, sessions, session, text):
     elif kind in ("restart", "cancel"):
         sessions.reset(user)
         prefix = "Cancelled. " if kind == "cancel" else ""
-        await say(ctx, user, prefix + views.welcome())
+        await ctx.send(user, cards.welcome_message(prefix + views.welcome()))
 
     elif kind == "scan":
         email = intent.get("email", "").strip()
@@ -119,7 +126,10 @@ async def handle(ctx, user, sessions, session, text):
         if intent.get("all_delete"):
             picked = [i for i, item in enumerate(items) if item["verdict"] == "delete"]
         if not picked:
-            await say(ctx, user, "I couldn't tell which accounts you meant. Try `delete 1, 3` or `delete all`.")
+            lowered = text.lower()
+            picked = [i for i, item in enumerate(items) if item["service"].lower() in lowered]
+        if not picked:
+            await say(ctx, user, "I couldn't tell which accounts you meant. Tick some boxes, or try `delete 1, 3` or `delete all`.")
             return
         session["selected"], session["actions"] = picked, []
         request_id = begin(sessions, user, session, "planning")
@@ -153,7 +163,7 @@ async def handle(ctx, user, sessions, session, text):
     else:
         answer = intent.get("answer") or ""
         if state == "idle":
-            await say(ctx, user, (answer + "\n\n" if answer else "") + views.welcome())
+            await ctx.send(user, cards.welcome_message((answer + "\n\n" if answer else "") + views.welcome()))
         else:
             await say(ctx, user, answer or views.help_text())
 
@@ -197,10 +207,15 @@ async def on_triage(ctx, sender, msg):
         sessions.save(user, session)
         await say(ctx, user, views.error(msg.error or "I couldn't rank your accounts."))
         return
-    session["items"] = [to_dict(i) for i in msg.items]
-    session["state"] = "triaged"
+    items = [to_dict(i) for i in msg.items]
+    current, projected = score.privacy_score(items), score.projected_score(items)
+    session.update(items=items, state="triaged", score=current)
     sessions.save(user, session)
-    await say(ctx, user, views.triage_report(session["email"], session["breaches"], session["items"]))
+    text = with_line(views.triage_report(session["email"], session["breaches"], items),
+                     score.score_line(current, projected))
+    await ctx.send(user, cards.report_message(
+        text, items, views._headline(session["email"], session["breaches"]), current, projected,
+    ))
 
 
 @agent.on_message(model=EraseResult)
@@ -217,13 +232,21 @@ async def on_erase(ctx, sender, msg):
         session["actions"] = actions
         session["state"] = "confirm" if any(emailable(a) for a in actions) else "done"
         sessions.save(user, session)
-        await say(ctx, user, views.erase_plan(actions, signer(session)))
+        await ctx.send(user, cards.plan_message(views.erase_plan(actions, signer(session)), actions, signer(session)))
         return
 
     session["state"] = "done"
     sessions.save(user, session)
+    items = session.get("items", [])
+    current = session.get("score") or score.privacy_score(items)
+    projected = score.privacy_score(items, removed=session.get("selected", []), secured=True)
     due = deadline_from()
-    await say(ctx, user, views.erase_done(actions, due.strftime("%d %B %Y")))
+    deadline_text = due.strftime("%d %B %Y")
+    text = views.erase_done(actions, deadline_text)
+    line = score.done_line(current, projected)
+    if line:
+        text = f"{text}\n\n{line}"
+    await ctx.send(user, cards.done_message(text, actions, deadline_text, current, projected))
     for action in msg.actions:
         if action.sent:
             try:

@@ -1,0 +1,110 @@
+{
+  "root": {
+    "type": "section",
+    "title": "Deletion plan",
+    "subtitle": "Nothing is sent until you press send.",
+    "children": [
+      {
+        "type": "group",
+        "direction": "row",
+        "gap": 8,
+        "children": [
+          {
+            "type": "badge",
+            "label": "Self-serve link",
+            "variant": "success"
+          },
+          {
+            "type": "text",
+            "value": "Adobe · medium: https://example.com/delete"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "direction": "row",
+        "gap": 8,
+        "children": [
+          {
+            "type": "badge",
+            "label": "Email request",
+            "variant": "info"
+          },
+          {
+            "type": "text",
+            "value": "Gawker → privacy@example.com"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "direction": "row",
+        "gap": 8,
+        "children": [
+          {
+            "type": "badge",
+            "label": "Email request",
+            "variant": "info"
+          },
+          {
+            "type": "text",
+            "value": "Stratfor → privacy@example.com"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "direction": "row",
+        "gap": 8,
+        "children": [
+          {
+            "type": "badge",
+            "label": "Manual step",
+            "variant": "warning"
+          },
+          {
+            "type": "text",
+            "value": "Old Forum: No deletion route on file yet."
+          }
+        ]
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "input",
+        "name": "user_name",
+        "kind": "text",
+        "required": true,
+        "label": "Your full name (signs the requests)",
+        "placeholder": "Asha Rao"
+      },
+      {
+        "type": "group",
+        "direction": "row",
+        "gap": 8,
+        "children": [
+          {
+            "type": "button",
+            "label": "Send 2 requests",
+            "primary": true,
+            "action": {
+              "selection": {
+                "action": "send"
+              }
+            }
+          },
+          {
+            "type": "button",
+            "label": "Cancel",
+            "action": {
+              "selection": {
+                "action": "cancel"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

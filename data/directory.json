@@ -101,10 +101,10 @@
     "hibp_name": "Zomato",
     "method": "app_only",
     "deletion_url": "",
-    "privacy_email": "",
+    "privacy_email": "privacy@zomato.com",
     "difficulty": "medium",
-    "note": "Believed in-app (Profile > Settings); DPDP erasure right applies from 13 May 2027",
-    "source_url": "",
+    "note": "In-app: Profile > Setting > Security > Delete Account; or email DPO; irreversible once processed; DPDP erasure right applies from 13 May 2027",
+    "source_url": "https://www.zomato.com/policies/terms-of-service/",
     "checked_on": "2026-10-24"
   },
   {
@@ -113,22 +113,22 @@
     "hibp_name": "Domino's India",
     "method": "email",
     "deletion_url": "",
-    "privacy_email": "",
+    "privacy_email": "guestcaredominos@jublfood.com",
     "difficulty": "hard",
-    "note": "Method unverified; DPDP erasure right applies from 13 May 2027",
-    "source_url": "",
+    "note": "Policy says email guestcare to delete account/data, or call 1800-208-1234; policy page looks old so confirm reply; DPDP erasure right applies from 13 May 2027",
+    "source_url": "https://www.dominos.co.in/privacy-policy",
     "checked_on": "2026-10-24"
   },
   {
     "service": "BigBasket",
     "domain": "bigbasket.com",
     "hibp_name": "bigbasket",
-    "method": "app_only",
+    "method": "email",
     "deletion_url": "",
-    "privacy_email": "",
+    "privacy_email": "customerservice@bigbasket.com",
     "difficulty": "medium",
-    "note": "Method unverified; DPDP erasure right applies from 13 May 2027",
-    "source_url": "",
+    "note": "No in-app delete; email request from registered email/phone; policy promises reply within 30 days; escalate to grievanceofficer@bigbasket.com; DPDP erasure right applies from 13 May 2027",
+    "source_url": "https://www.bigbasket.com/fp/mobile/bb-store-privacy-policy/",
     "checked_on": "2026-10-24"
   },
   {
@@ -159,12 +159,12 @@
     "service": "Swiggy",
     "domain": "swiggy.com",
     "hibp_name": "",
-    "method": "app_only",
+    "method": "email",
     "deletion_url": "",
-    "privacy_email": "",
+    "privacy_email": "support@swiggy.in",
     "difficulty": "medium",
-    "note": "Method unverified; DPDP erasure right applies from 13 May 2027",
-    "source_url": "",
+    "note": "Email from registered address with phone number; policy says takes effect within 5 business days; escalate to grievances@swiggy.in; DPDP erasure right applies from 13 May 2027",
+    "source_url": "https://www.swiggy.com/corporate/wp-content/uploads/2025/07/Privacy-Policy.pdf",
     "checked_on": "2026-10-24"
   },
   {
@@ -173,10 +173,10 @@
     "hibp_name": "",
     "method": "email",
     "deletion_url": "",
-    "privacy_email": "",
-    "difficulty": "hard",
-    "note": "Method unverified; DPDP erasure right applies from 13 May 2027",
-    "source_url": "",
+    "privacy_email": "privacy@unacademy.com",
+    "difficulty": "medium",
+    "note": "Delete option in-app if available, else email privacy team; help@unacademy.com is level-1 support; DPDP erasure right applies from 13 May 2027",
+    "source_url": "https://unacademy.com/privacy",
     "checked_on": "2026-10-24"
   },
   {
@@ -185,10 +185,10 @@
     "hibp_name": "",
     "method": "email",
     "deletion_url": "",
-    "privacy_email": "",
+    "privacy_email": "grievance@mobikwik.com",
     "difficulty": "hard",
-    "note": "Wallet/KYC data may be retained by law; DPDP right applies from 13 May 2027",
-    "source_url": "",
+    "note": "Policy: request login-account deletion on platform (Help) or email grievance; clear wallet balance and loans first; wallet/KYC data may be retained by law; DPDP right applies from 13 May 2027",
+    "source_url": "https://www.mobikwik.com/privacypolicy",
     "checked_on": "2026-10-24"
   },
   {
@@ -196,11 +196,11 @@
     "domain": "truecaller.com",
     "hibp_name": "",
     "method": "app_only",
-    "deletion_url": "",
-    "privacy_email": "",
+    "deletion_url": "https://www.truecaller.com/unlisting",
+    "privacy_email": "rgo.india@truecaller.com",
     "difficulty": "medium",
-    "note": "Believed in-app 'Deactivate account'; DPDP erasure right applies from 13 May 2027",
-    "source_url": "",
+    "note": "In-app: Settings > Privacy Center > Deactivate; then unlist number at deletion_url; erasure of held data via email to India grievance officer; email from secondary source, official policy page not retrievable; DPDP erasure right applies from 13 May 2027",
+    "source_url": "https://saaph.in/company/truecaller",
     "checked_on": "2026-10-24"
   },
   {
@@ -237,6 +237,18 @@
     "difficulty": "medium",
     "note": "Login required; closing also affects Prime, Kindle, Audible; Amazon India may differ",
     "source_url": "https://www.amazon.com/privacy/data-deletion",
+    "checked_on": "2026-10-24"
+  },
+  {
+    "service": "boAt",
+    "domain": "boat-lifestyle.com",
+    "hibp_name": "boAt",
+    "method": "form",
+    "deletion_url": "https://support.boat-lifestyle.com/",
+    "privacy_email": "info@imaginemarketingindia.com",
+    "difficulty": "medium",
+    "note": "Wearables app: Accounts tab > Delete Account; website account has no self-serve delete found, so raise request on support portal or email grievance officer (Imagine Marketing Ltd) with name and registered email; policy says grievance acknowledged within 72 hours; Wanderer app says closure within 5 business days; deletion is permanent; DPDP erasure right applies from 13 May 2027",
+    "source_url": "https://www.boat-lifestyle.com/pages/privacy-policy",
     "checked_on": "2026-10-24"
   }
 ]

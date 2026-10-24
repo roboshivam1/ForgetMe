@@ -1,6 +1,7 @@
 import json
 import re
 
+from agents.orchestrator.cards import card_intent
 from shared.asi1 import aask_json
 
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
@@ -62,7 +63,7 @@ SYSTEM = (
 
 
 async def classify(text, state, count):
-    found = rule_intent(text, state, count)
+    found = card_intent(text, state, count) or rule_intent(text, state, count)
     if found:
         return found
     context = json.dumps({"current_step": state, "accounts_listed": count, "message": text})

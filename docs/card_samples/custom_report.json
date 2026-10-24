@@ -1,0 +1,216 @@
+{
+  "root": {
+    "type": "section",
+    "title": "Your exposure report",
+    "subtitle": "5 accounts · 3 marked delete",
+    "children": [
+      {
+        "type": "text",
+        "value": "you@example.com appears in 5 data breaches.",
+        "style": "emphasis"
+      },
+      {
+        "type": "group",
+        "direction": "row",
+        "gap": 8,
+        "children": [
+          {
+            "type": "badge",
+            "label": "Privacy score 33/100",
+            "variant": "warning"
+          },
+          {
+            "type": "text",
+            "value": "Exposed",
+            "style": "emphasis"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "style": "muted",
+        "value": "Projected after cleanup: 97/100 once companies confirm."
+      },
+      {
+        "type": "group",
+        "direction": "column",
+        "gap": 4,
+        "children": [
+          {
+            "type": "input",
+            "name": "acc_1",
+            "kind": "checkbox",
+            "label": "1. Adobe"
+          },
+          {
+            "type": "group",
+            "direction": "row",
+            "gap": 8,
+            "children": [
+              {
+                "type": "badge",
+                "label": "🔴 Delete",
+                "variant": "warning"
+              },
+              {
+                "type": "text",
+                "value": "Breached 2013; passwords and hints leaked.",
+                "style": "muted"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "direction": "column",
+        "gap": 4,
+        "children": [
+          {
+            "type": "input",
+            "name": "acc_2",
+            "kind": "checkbox",
+            "label": "2. Gawker"
+          },
+          {
+            "type": "group",
+            "direction": "row",
+            "gap": 8,
+            "children": [
+              {
+                "type": "badge",
+                "label": "🔴 Delete",
+                "variant": "warning"
+              },
+              {
+                "type": "text",
+                "value": "Breached 2010; the oldest exposure.",
+                "style": "muted"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "direction": "column",
+        "gap": 4,
+        "children": [
+          {
+            "type": "input",
+            "name": "acc_3",
+            "kind": "checkbox",
+            "label": "3. Stratfor"
+          },
+          {
+            "type": "group",
+            "direction": "row",
+            "gap": 8,
+            "children": [
+              {
+                "type": "badge",
+                "label": "🔴 Delete",
+                "variant": "warning"
+              },
+              {
+                "type": "text",
+                "value": "Breached 2011; unsalted MD5 passwords.",
+                "style": "muted"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "direction": "column",
+        "gap": 4,
+        "children": [
+          {
+            "type": "input",
+            "name": "acc_4",
+            "kind": "checkbox",
+            "label": "4. Canva"
+          },
+          {
+            "type": "group",
+            "direction": "row",
+            "gap": 8,
+            "children": [
+              {
+                "type": "badge",
+                "label": "🟡 Secure",
+                "variant": "info"
+              },
+              {
+                "type": "text",
+                "value": "Still active; change the password, turn on 2FA.",
+                "style": "muted"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "direction": "column",
+        "gap": 4,
+        "children": [
+          {
+            "type": "input",
+            "name": "acc_5",
+            "kind": "checkbox",
+            "label": "5. Spotify"
+          },
+          {
+            "type": "group",
+            "direction": "row",
+            "gap": 8,
+            "children": [
+              {
+                "type": "badge",
+                "label": "🟢 Keep",
+                "variant": "success"
+              },
+              {
+                "type": "text",
+                "value": "No known breach and in regular use.",
+                "style": "muted"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "group",
+        "direction": "row",
+        "gap": 8,
+        "children": [
+          {
+            "type": "button",
+            "label": "Delete all red (3)",
+            "primary": true,
+            "action": {
+              "selection": {
+                "action": "delete_all_red"
+              }
+            }
+          },
+          {
+            "type": "button",
+            "label": "Delete selected",
+            "primary": false,
+            "action": {
+              "selection": {
+                "action": "delete_selected"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
