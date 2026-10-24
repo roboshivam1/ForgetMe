@@ -5,3 +5,4 @@ __pycache__/
 *_data.json
 data/followups.json
 *.sh
+logs/
